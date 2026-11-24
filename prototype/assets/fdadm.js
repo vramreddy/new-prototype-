@@ -1,0 +1,13 @@
+/* Admin: founder page photo and note */
+(function(){var ST=window.ST,BA=ST&&ST.BA;if(!ST)return;var $=ST.$,esc=ST.esc;
+function get(){return BA.jget('ba3_founder',{})||{}}
+window.ADM_FD=function(tb){var d=get();
+ tb.innerHTML=ST.panel('Founder page',
+ '<p style="margin:0 0 12px;color:var(--mute)">This controls the photograph on the Our founder page. Upload a professional portrait of Advocate Manju S Prakash in her lawyer robes. It appears in a round frame, so keep her face in the centre.</p>'+
+ '<div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap"><div style="width:140px;height:140px;border-radius:50%;overflow:hidden;background:#0B1F36;color:#fff;display:flex;align-items:center;justify-content:center;font:800 34px var(--f)">'+(d.img?'<img src="'+d.img+'" style="width:100%;height:100%;object-fit:cover" alt="">':'MSP')+'</div>'+
+ '<div><input type="file" id="fdf" accept="image/jpeg,image/png,image/webp"> <button class="btn out sm" id="fdr">Remove photo</button><div style="font-size:12.5px;color:var(--mute);margin-top:6px">JPG, PNG or WebP. Resized to 600 × 600 pixels. Use a photo you own or have permission to publish.</div></div></div>'+
+ '<h4 style="margin:20px 0 6px">Her note about the website (optional)</h4><p style="margin:0 0 6px;color:var(--mute);font-size:13px">The text on the page is a draft for Advocate Manju to review. Paste her own words here and separate paragraphs with a blank line. Leave empty to keep the draft.</p><textarea id="fdn" rows="8" style="width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;font:inherit">'+esc(d.note||'')+'</textarea><div style="margin-top:10px"><button class="btn sm" id="fds">Save note</button> <a class="btn out sm" href="founder.html" target="_blank">View page</a></div>');
+ $('fdf').onchange=function(){var f=this.files[0];if(!f)return;if(!/^image\/(jpeg|png|webp)$/.test(f.type)){BA.toast('Use a JPG, PNG or WebP picture');return}var u=URL.createObjectURL(f),im=new Image();im.onload=function(){var S=600,c=document.createElement('canvas');c.width=c.height=S;var m=Math.min(im.width,im.height),x=(im.width-m)/2,y=(im.height-m)/3;c.getContext('2d').drawImage(im,x,Math.max(0,y),m,m,0,0,S,S);var o=get();o.img=c.toDataURL('image/jpeg',.85);BA.jset('ba3_founder',o);ST.log('Updated founder photograph');BA.toast('Photograph saved');window.ADM_FD(tb)};im.src=u};
+ $('fdr').onclick=function(){var o=get();delete o.img;BA.jset('ba3_founder',o);ST.log('Removed founder photograph');window.ADM_FD(tb)};
+ $('fds').onclick=function(){var o=get();o.note=$('fdn').value.trim();BA.jset('ba3_founder',o);ST.log('Updated founder note');BA.toast('Saved')}};
+})();
